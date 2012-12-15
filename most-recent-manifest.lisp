@@ -155,7 +155,8 @@
 (make-instance
  'git-repo
  :name :cl+ssl
- :url "https://git.gitorious.org/cl-plus-ssl/cl-plus-ssl.git")
+ :url "https://git.gitorious.org/cl-plus-ssl/cl-plus-ssl.git"
+ :branch "bugfix-v0.10.7.1")
 
 (make-instance
  'git-repo
