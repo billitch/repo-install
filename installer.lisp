@@ -287,8 +287,8 @@ Use FORCE to fetch/update even if the package is installed.
 		     (t result))))))))
 
 (defclass git-repo (base-repo)
-  ((url :initarg :url))
-  )
+  ((url :initarg :url)
+   (branch :initarg :branch :initform "master")))
 
 (defmethod asd-file ((p git-repo) &key (package-name nil))
   (call-next-method p :package-name package-name
@@ -313,13 +313,13 @@ Use FORCE to fetch/update even if the package is installed.
 	 :report-function (lambda (s) (format s "Retry updating ~a." p))))
     (test-environment :git)
     (let* ((dir (database-dir p)))
-      (with-slots (url release) p
+      (with-slots (url branch release) p
 	(cond ((not (probe-file (make-pathname :name ".git" :defaults dir)))
 	       (cl-fad:delete-directory-and-files dir :if-does-not-exist :ignore)
 	       ;; make sure that we don't leave around a partially created repo
 	       (delete-dir-on-error dir
 		 ;; repo is not there yet, get it
-		 (safe-shell-command nil"git clone ~a ~a" url
+		 (safe-shell-command nil"git clone -b ~a ~a ~a" branch url
 				     (string-right-trim "/" (format nil "~A" dir)))))
 	      (t
 	       (let ((result (safe-shell-command nil "(cd ~a && git pull)" dir)))
