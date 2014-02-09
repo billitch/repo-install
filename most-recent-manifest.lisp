@@ -284,8 +284,8 @@
  :url "http://common-lisp.net/r/users/frideau/fare-csv.git")
 
 (make-instance
- 'cliki-repo
- :name :parse-number)
+ 'git-repo
+ :name "https://github.com/sharplispers/parse-number.git")
 
 (make-instance
  'git-repo
@@ -799,3 +799,76 @@
  :name :chtml-matcher
  :url "http://www.common-lisp.net/project/chtml-matcher/darcs/chtml-matcher")
 
+(make-instance
+ 'git-repo
+ :name :inferior-shell
+ :url "http://common-lisp.net/r/projects/qitab/inferior-shell.git")
+
+(make-instance
+ 'git-repo
+ :name :css-selectors
+ :url "http://github.com/AccelerationNet/css-selectors.git")
+
+(make-instance
+ 'git-repo
+ :name :buildnode
+ :url "http://github.com/AccelerationNet/buildnode.git")
+
+(make-instance
+ 'git-repo
+ :name :symbol-munger
+ :url "http://github.com/AccelerationNet/symbol-munger.git")
+
+(make-instance
+ 'git-repo
+ :name :collectors
+ :url "http://github.com/AccelerationNet/collectors.git")
+
+(make-instance
+ 'cliki-repo
+ :name :cl-xmlspam)
+
+(make-instance
+ 'git-repo
+ :name :optima
+ :url "http://github.com/m2ym/optima.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-pdf
+ :additional-packages '(:cl-pdf-parser)
+ :url "http://github.com/archimag/cl-pdf.git")
+
+(make-instance
+ 'git-repo
+ :name :zpb-ttf
+ :url "https://github.com/xach/zpb-ttf.git")
+
+(make-instance
+ 'cliki-repo
+ :name :chipz)
+
+(make-instance
+ 'git-repo
+ :name :spatial-trees
+ :url "https://github.com/rpav/spatial-trees.git")
+
+(make-instance
+ 'git-repo
+ :name :chronicity
+ :url "https://github.com/chaitanyagupta/chronicity.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-markup
+ :url "https://github.com/arielnetworks/cl-markup.git")
+
+(make-instance
+ 'git-repo
+ :name :rw-ut
+ :url "https://github.com/nallen05/rw-ut.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-bcrypt
+ :url "https://github.com/billitch/cl-bcrypt.git")
