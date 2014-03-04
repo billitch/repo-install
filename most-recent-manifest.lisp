@@ -872,3 +872,13 @@
  'git-repo
  :name :cl-bcrypt
  :url "https://github.com/billitch/cl-bcrypt.git")
+
+(make-instance
+ 'git-repo
+ :name :oauth2
+ :url "https://github.com/Neronus/oauth2.git")
+
+(make-instance
+ 'git-repo
+ :name :gravatar
+ :url "https://github.com/sellout/cl-gravatar.git")
