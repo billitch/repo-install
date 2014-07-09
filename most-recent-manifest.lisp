@@ -882,3 +882,56 @@
  'git-repo
  :name :gravatar
  :url "https://github.com/sellout/cl-gravatar.git")
+
+(make-instance
+ 'git-repo
+ :name :fiveam
+ :url "https://github.com/sionescu/fiveam.git")
+
+(make-instance
+ 'git-repo
+ :name :can
+ :additional-packages '(:L>can)
+ :url "https://github.com/LowH/cl-can.git")
+
+(make-instance
+ 'git-repo
+ :name :do-urlencode
+ :url "https://github.com/drdo/do-urlencode.git")
+
+(make-instance
+ 'git-repo
+ :name :log4cl
+ :url "https://github.com/7max/log4cl")
+
+(make-instance
+ 'git-repo
+ :name :cl-libevent2
+ :additional-packages '(:cl-libevent2-ssl)
+ :url "https://github.com/orthecreedence/cl-libevent2.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-async
+ :additional-packages '(:cl-async-ssl)
+ :url "https://github.com/orthecreedence/cl-async.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-async-future
+ :url "https://github.com/orthecreedence/cl-async-future.git")
+
+(make-instance
+ 'git-repo
+ :name :http-parse
+ :url "https://github.com/orthecreedence/http-parse.git")
+
+(make-instance
+ 'git-repo
+ :name :wookie
+ :url "https://github.com/orthecreedence/wookie.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-inflector
+ :url "https://github.com/AccelerationNet/cl-inflector.git")
