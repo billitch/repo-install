@@ -155,13 +155,12 @@
 (make-instance
  'git-repo
  :name :cl+ssl
- :url "https://git.gitorious.org/cl-plus-ssl/cl-plus-ssl.git"
- :branch "bugfix-v0.10.7.1")
+ :url "https://github.com/cl-plus-ssl/cl-plus-ssl.git")
 
 (make-instance
  'git-repo
  :name :trivial-gray-streams
- :url "git://gitorious.org/trivial-gray-streams/trivial-gray-streams.git")
+ :url "https://github.com/trivial-gray-streams/trivial-gray-streams.git")
 
 (make-instance
  'cvs-repo
@@ -391,9 +390,9 @@
  :url "http://common-lisp.net/r/users/frideau/fare-utils.git")
 
 (make-instance
- 'darcs-repo
+ 'git-repo
  :name :cl-json
- :url "http://common-lisp.net/project/cl-json/darcs/cl-json")
+ :url "https://github.com/hankhero/cl-json.git")
 
 (make-instance
  'git-repo
@@ -520,9 +519,9 @@
  :url "http://common-lisp.net/project/cl-serializer/darcs/cl-serializer")
 
 (make-instance
- 'darcs-repo
+ 'git-repo
  :name :local-time
- :url "http://common-lisp.net/project/local-time/darcs/local-time")
+ :url "https://github.com/dlowe-net/local-time.git")
 
 (make-instance
  'git-repo
@@ -935,3 +934,33 @@
  'git-repo
  :name :cl-inflector
  :url "https://github.com/AccelerationNet/cl-inflector.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-containers
+ :url "https://github.com/gwkkwg/cl-containers.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-markdown
+ :url "https://github.com/gwkkwg/cl-markdown.git")
+
+(make-instance
+ 'git-repo
+ :name :dynamic-classes
+ :url "https://github.com/gwkkwg/dynamic-classes.git")
+
+(make-instance
+ 'git-repo
+ :name :metabang-bind
+ :url "https://github.com/gwkkwg/metabang-bind.git")
+
+(make-instance
+ 'git-repo
+ :name :metalities
+ :url "https://github.com/gwkkwg/metalities.git")
+
+(make-instance
+ 'git-repo
+ :name :metalities-base
+ :url "https://github.com/gwkkwg/metalities-base.git")
