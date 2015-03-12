@@ -94,12 +94,12 @@
  :strip-components 1)
 
 ;; forward declare the test package
-(defpackage cl-ppcre-test)
+;(defpackage cl-ppcre-test)
 (make-instance
- 'darcs-repo
+ 'git-repo
  :name :cl-ppcre
- :additional-packages '(:cl-ppcre-test :cl-ppcre-unicode)
- :url "http://common-lisp.net/~loliveira/ediware/cl-ppcre"
+ :additional-packages '(:cl-ppcre-unicode)
+ :url "https://github.com/edicl/cl-ppcre.git"
  #+ignore
  :tester
  #+ignore
@@ -662,7 +662,7 @@
 (make-instance
  'git-repo
  :name :cl-uri-templates
- :url "http://github.com/billitch/cl-uri-templates.git")
+ :url "http://github.com/thodg/cl-uri-templates.git")
 
 (make-instance
  'git-repo
@@ -701,32 +701,32 @@
 (make-instance
  'git-repo
  :name :com.informatimago.common-lisp.llrbtree
- :url "http://github.com/billitch/com.informatimago.common-lisp.llrbtree.git")
+ :url "http://github.com/thodg/com.informatimago.common-lisp.llrbtree.git")
 
 (make-instance
  'git-repo
  :name :lessp
- :url "git@github.com:billitch/lessp.git")
+ :url "git@github.com:thodg/lessp.git")
 
 (make-instance
  'git-repo
- :name :lowh-facts
- :url "git@github.com:billitch/lowh-facts.git")
+ :name :facts
+ :url "git@github.com:thodg/facts.git")
 
 (make-instance
  'git-repo
  :name :http-pool
- :url "git://github.com/billitch/http-pool.git")
+ :url "git://github.com/thodg/http-pool.git")
 
 (make-instance
  'git-repo
  :name :xml-emitter
- :url "git@github.com:billitch/xml-emitter.git")
+ :url "git@github.com:thodg/xml-emitter.git")
 
 (make-instance
  'git-repo
  :name :xml-plist-emitter
- :url "git@github.com:billitch/xml-plist-emitter.git")
+ :url "git@github.com:thodg/xml-plist-emitter.git")
 
 (make-instance
  'git-repo
@@ -756,7 +756,7 @@
 (make-instance
  'git-repo
  :name :cl-mime
- :url "git://github.com/billitch/cl-mime.git")
+ :url "git://github.com/thodg/cl-mime.git")
 
 (make-instance
  'git-repo
@@ -771,7 +771,7 @@
 (make-instance
  'git-repo
  :name :exec-js
- :url "git://github.com/billitch/exec-js.git")
+ :url "git://github.com/thodg/exec-js.git")
 
 (make-instance
  'git-repo
@@ -781,7 +781,7 @@
 (make-instance
  'git-repo
  :name :rollback
- :url "https://github.com/billitch/rollback.git")
+ :url "https://github.com/thodg/rollback.git")
 
 (make-instance
  'git-repo
@@ -870,7 +870,7 @@
 (make-instance
  'git-repo
  :name :cl-bcrypt
- :url "https://github.com/billitch/cl-bcrypt.git")
+ :url "https://github.com/thodg/cl-bcrypt.git")
 
 (make-instance
  'git-repo
@@ -886,6 +886,11 @@
  'git-repo
  :name :fiveam
  :url "https://github.com/sionescu/fiveam.git")
+
+(make-instance
+ 'git-repo
+ :name :swap-bytes
+ :url "https://github.com/sionescu/swap-bytes.git")
 
 (make-instance
  'git-repo
@@ -964,3 +969,18 @@
  'git-repo
  :name :metalities-base
  :url "https://github.com/gwkkwg/metalities-base.git")
+
+(make-instance
+ 'darcs-repo
+ :name :named-readtables
+ :url "http://common-lisp.net/project/editor-hints/darcs/named-readtables/")
+
+(make-instance
+ 'git-repo
+ :name :buffalo
+ :url "https://github.com/fhuttner/buffalo.git")
+
+(make-instance
+ 'git-repo
+ :name :cfg
+ :url "http://github.com/thodg/cfg.git")
