@@ -984,3 +984,13 @@
  'git-repo
  :name :cfg
  :url "http://github.com/thodg/cfg.git")
+
+(make-instance
+ 'git-repo
+ :name :cl-dot
+ :url "http://github.com/michaelw/cl-dot.git")
+
+(make-instance
+ 'git-repo
+ :name :positional
+ :url "http://github.com/thodg/positional.git")
