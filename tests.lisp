@@ -23,6 +23,7 @@
 		(setf loaded t)
 		(setf load-output (get-output-stream-string *standard-output*)))
 	    (error (e)
+              (declare (ignore e))
 	      (setf loaded nil)
 	      (setf load-output (get-output-stream-string *standard-output*))
 	      (return-from test-package result))))
@@ -54,6 +55,7 @@ directory, but have not yet been committed to the local repository."
       (funcall fn))
     (multiple-value-bind (match submatch)
 	(cl-ppcre:scan-to-strings (cl-ppcre:create-scanner "([0-9]+) out of ([0-9]+) total tests failed") (get-output-stream-string *standard-output*))
+      (declare (ignore match))
       (values (get-output-stream-string *standard-output*)
 	      (parse-integer (aref submatch 0))
 	      (parse-integer (aref submatch 1))))))
@@ -66,6 +68,7 @@ directory, but have not yet been committed to the local repository."
 	(cl-ppcre:scan-to-strings (cl-ppcre:create-scanner
 				   "([0-9]+) tests, [0-9]+ assertions, ([0-9]+) failures")
 				  (get-output-stream-string *standard-output*))
+      (declare (ignore match))
       (values (get-output-stream-string *standard-output*)
 	      (parse-integer (aref submatch 0))
 	      (parse-integer (aref submatch 1))))))
