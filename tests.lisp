@@ -1,3 +1,4 @@
+(in-package :ri)
 
 (defclass test-results ()
     ((repo :initarg :repo)
