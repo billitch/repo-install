@@ -542,4 +542,4 @@ repository, but have not yet been committed upstream"
        (let ((status (and (probe-file (working-dir package))
 			  (local-repo-changes package))))
        (cond ((not (null status))
-	      (dump-message package status))))))
+	      (dump-message :package package :message status))))))
