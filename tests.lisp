@@ -73,4 +73,4 @@ directory, but have not yet been committed to the local repository."
 (defun return-lift-results (r)
   (values ""
 	  nil
-	  (length (lift::failures r))))
+	  (length (funcall (intern "FAILURES" :lift) r))))
