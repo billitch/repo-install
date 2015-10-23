@@ -182,10 +182,14 @@ Use FORCE to fetch/update even if the package is installed.
   (merge-pathnames (make-pathname :directory '(:relative "upstream"))
 		   (database-dir p)))
 
-(defmethod asd-file ((p tarball-backed-bzr-repo) &key (package-name nil))
+(defmethod asd-file ((p tarball-backed-bzr-repo)
+                     &key (package-name nil) (test nil))
   (call-next-method p :package-name package-name
 		    :test #'(lambda (x)
-			      (not (member ".bzr" (pathname-directory x) :test #'equalp)))))
+                              (and (or (null test)
+                                       (funcall test x))
+                                   (not (member ".bzr" (pathname-directory x)
+                                                :test #'equalp))))))
 
 (defmethod repo-status ((repo tarball-backed-bzr-repo))
   (let ((result (repo-command repo t "status" :cd t)))
@@ -286,10 +290,13 @@ Use FORCE to fetch/update even if the package is installed.
 
 (define-vcs-command darcs-repo "darcs" "Darcs")
 
-(defmethod asd-file ((p darcs-repo) &key (package-name nil))
+(defmethod asd-file ((p darcs-repo) &key (package-name nil) (test nil))
   (call-next-method p :package-name package-name
 		    :test #'(lambda (x)
-			      (not (member "_darcs" (pathname-directory x) :test #'equalp)))))
+                              (and (or (null test)
+                                       (funcall test x))
+                                   (not (member "_darcs" (pathname-directory x)
+                                                :test #'equalp))))))
 
 (defmethod repo-status ((p darcs-repo))
   (let ((result (safe-shell-command t "(cd ~a && darcs whatsnew)" (working-dir p))))
@@ -327,10 +334,13 @@ Use FORCE to fetch/update even if the package is installed.
 
 (define-vcs-command git-repo "git" "Git")
 
-(defmethod asd-file ((p git-repo) &key (package-name nil))
+(defmethod asd-file ((p git-repo) &key (package-name nil) (test nil))
   (call-next-method p :package-name package-name
 		    :test #'(lambda (x)
-			      (not (member ".git" (pathname-directory x) :test #'equalp)))))
+                              (and (or (null test)
+                                       (funcall test x))
+                                   (not (member ".git" (pathname-directory x)
+                                                :test #'equalp))))))
 
 (defmethod repo-status ((p git-repo))
   (let ((result (safe-shell-command t "(cd ~a && git status)" (working-dir p))))
@@ -372,10 +382,13 @@ Use FORCE to fetch/update even if the package is installed.
 
 (define-vcs-command mercurial-repo "hg" "Mercurial")
 
-(defmethod asd-file ((p mercurial-repo) &key (package-name nil))
+(defmethod asd-file ((p mercurial-repo) &key (package-name nil) (test nil))
   (call-next-method p :package-name package-name
 		    :test #'(lambda (x)
-			      (not (member ".hg" (pathname-directory x) :test #'equalp)))))
+                              (and (or (null test)
+                                       (funcall test x))
+                                   (not (member ".hg" (pathname-directory x)
+                                                :test #'equalp))))))
 
 (defmethod repo-status ((p mercurial-repo))
   (let ((result (safe-shell-command t "(cd ~a && hg status)" (working-dir p))))
@@ -414,10 +427,13 @@ Use FORCE to fetch/update even if the package is installed.
 
 (define-vcs-command svn-repo "svn" "Subversion")
 
-(defmethod asd-file ((p svn-repo) &key (package-name nil))
+(defmethod asd-file ((p svn-repo) &key (package-name nil) (test nil))
   (call-next-method p :package-name package-name
 		    :test #'(lambda (x)
-			      (not (member ".svn" (pathname-directory x) :test #'equalp)))))
+                              (and (or (null test)
+                                       (funcall test x))
+                                   (not (member ".svn" (pathname-directory x)
+                                                :test #'equalp))))))
 
 (defmethod repo-status ((p svn-repo))
   (let ((result (safe-shell-command nil "(cd ~a && svn status)" (working-dir p))))
