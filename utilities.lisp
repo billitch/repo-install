@@ -23,7 +23,8 @@
 
 (defun files-different (a b)
   (multiple-value-bind (result code)
-      (safe-shell-command t "diff --brief ~a ~a" a b)
+      (safe-shell-command t "cmp ~S ~S" a b)
+    (declare (ignore result))
     (not (eql code 0))))
 
 (defmacro delete-dir-on-error (dir &body body)
