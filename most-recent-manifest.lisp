@@ -983,14 +983,35 @@
 (make-instance
  'git-repo
  :name :cfg
- :url "http://github.com/thodg/cfg.git")
+ :url "https://github.com/thodg/cfg.git")
 
 (make-instance
  'git-repo
  :name :cl-dot
- :url "http://github.com/michaelw/cl-dot.git")
+ :url "https://github.com/michaelw/cl-dot.git")
 
 (make-instance
  'git-repo
  :name :positional
- :url "http://github.com/thodg/positional.git")
+ :url "https://github.com/thodg/positional.git")
+
+
+(make-instance
+ 'git-repo
+ :name :lass
+ :url "https://github.com/RailsOnLisp/lass.git")
+
+(make-instance
+ 'git-repo
+ :name :trivial-indent
+ :url "https://github.com/Shinmera/trivial-indent.git")
+
+(make-instance
+ 'git-repo
+ :name :trivial-mimes
+ :url "https://github.com/Shinmera/trivial-mimes.git")
+
+(make-instance
+ 'git-repo
+ :name :fset
+ :url "https://github.com/slburson/fset.git")
