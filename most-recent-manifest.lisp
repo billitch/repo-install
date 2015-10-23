@@ -639,9 +639,9 @@
  :url "git://github.com/archimag/cl-routes.git")
 
 (make-instance
- 'cvs-repo
+ 'git-repo
  :name :swank
- :cvsroot ":pserver:anonymous:anonymous@common-lisp.net:/project/slime/cvsroot"
+ :url "https://github.com/slime/slime.git"
  :module "slime")
 
 (make-instance
