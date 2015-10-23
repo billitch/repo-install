@@ -9,6 +9,8 @@
      (test-output :initform nil))
 )
 
+(defgeneric test-package (repo))
+
 (defmethod test-package ((r base-repo))
   (let ((result (make-instance 'test-results :repo r)))
     (with-slots (loaded load-output nfailed ntests test-output) result

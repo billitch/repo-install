@@ -58,6 +58,13 @@ Use FORCE to fetch/update even if the package is installed.
 (defgeneric vcs-command (repo))
 (defgeneric test-environment (command &optional name))
 (defgeneric repo-command (repo command args &key cd))
+(defgeneric database-dir (repo))
+(defgeneric working-dir (repo))
+(defgeneric upstream-dir (repo))
+(defgeneric asd-file (repo &key package-name test))
+(defgeneric repo-status (repo))
+(defgeneric local-repo-changes (repo))
+(defgeneric update-repo (repo))
 
 (defmacro define-vcs-command (repo-class command name)
   `(defmethod vcs-command ((repo ,repo-class))
