@@ -1,6 +1,6 @@
 (in-package :ri)
 
-(defparameter *current-manifest* *load-truename*)
+(setq *current-manifest* *load-truename*)
 
 (flush-repos)
 

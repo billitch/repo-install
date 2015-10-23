@@ -11,5 +11,7 @@
 (defvar *all-packages* (make-hash-table)
   "map from package name to instance")
 
+(defvar *current-manifest*)
+
 (defun flush-repos ()
   (setq *all-packages* (make-hash-table)))
