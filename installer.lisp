@@ -1,39 +1,5 @@
 (in-package :ri)
 
-(defun test-environment (repo-type)
-  (ecase repo-type
-    (:wget
-     (multiple-value-bind (result code)
-	 (safe-shell-command t "which wget")
-       (if (not (eql code 0))
-	   (error "wget executable not found. Please install the wget url downloader try again."))))
-    (:git
-     (multiple-value-bind (result code)
-	 (safe-shell-command t "which git")
-       (if (not (eql code 0))
-	   (error "git executable not found. Please install the Git version control system and try again."))))
-    (:mercurial
-     (multiple-value-bind (result code)
-	 (safe-shell-command t "which hg")
-       (if (not (eql code 0))
-	   (error "hg (mercurial) executable not found. Please install the Mercurial version control system and try again."))))
-    (:darcs
-     (multiple-value-bind (result code)
-	 (safe-shell-command t "which darcs")
-       (if (not (eql code 0))
-	   (error "darcs executable not found. Please install the Darcs version control system and try again."))))
-    (:svn
-     (multiple-value-bind (result code)
-	 (safe-shell-command t "which svn")
-       (if (not (eql code 0))
-	   (error "svn executable not found. Please install the Subversion version control system and try again."))))
-    (:bzr
-     (multiple-value-bind (result code)
-	 (safe-shell-command t "which bzr")
-       (declare (ignore result))
-       (if (not (eql code 0))
-	   (error "bzr executable not found. Please install the Bazaar version control system and try again."))))))
-
 (defmacro with-repo-install (&body body)
   "
 Run BODY (possibly multiple times) and install missing packages until
@@ -71,6 +37,10 @@ Use FORCE to fetch/update even if the package is installed.
   (with-repo-install
     (asdf:operate 'asdf:load-op package)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Base class
+
 (defclass base-repo ()
   ((name :initarg :name :reader name)
    (additional-packages :initarg :additional-packages :initform nil
@@ -83,8 +53,15 @@ Use FORCE to fetch/update even if the package is installed.
    (tester :initarg :tester :initform nil
 	   :documentation "A funcallable object that will test the library. Returns true on success."))
 
-  (:documentation "Base class for any distribution package")
-  )
+  (:documentation "Base class for any distribution package"))
+
+(defgeneric vcs-command (repo))
+(defgeneric test-environment (command &optional name))
+(defgeneric repo-command (repo command args &key cd))
+
+(defmacro define-vcs-command (repo-class command name)
+  `(defmethod vcs-command ((repo ,repo-class))
+     (values ,command ,name)))
 
 (defmethod print-object ((o base-repo) stream)
   (print-unreadable-object (o stream :type t :identity t)
@@ -127,10 +104,60 @@ Use FORCE to fetch/update even if the package is installed.
 			 (return-from asd-file x)))))))))
   nil)
 
-(defclass tarball-backed-bzr-repo (base-repo)
+(defun which (command)
+  (multiple-value-bind (result code)
+      (safe-shell-command t (let ((*print-case* :downcase))
+                              (format nil "which ~A" command)))
+    (when (eql code 0)
+      (string-trim #(#\Newline) result))))
+
+(defmethod test-environment ((program string) &optional name)
+  (assert (stringp name))
+  (unless (which program)
+    (error "~A executable not found. Please install ~A and try again."
+           program name)))
+
+(defmethod test-environment ((repo base-repo) &optional name)
+  (declare (ignore name))
+  (multiple-value-bind (command name) (vcs-command repo)
+    (test-environment command (format nil "the ~A version control system" name))))
+
+(defun run-command (command args &key cd error)
+  (let ((cmd (with-output-to-string (str)
+               (when cd
+                 (format str "(cd ~S && " cd))
+               (format str "~a~{ ~a~}" command args)
+               (when cd
+                 (format str ";)")))))
+    (multiple-value-bind (output error-output result)
+        (trivial-shell:shell-command cmd)
+      (when (and error (/= result 0))
+        (error "Command returned ~A~& ~A~& ~A~& ~A"
+               result cmd error-output output))
+      (values (when (= result 0)
+                output)
+              result
+              output
+              error-output))))
+
+(defmethod repo-command ((repo base-repo) command args &key cd error)
+  (when (eq command t)
+    (setq command (vcs-command repo)))
+  (when (eq cd t)
+    (setq cd (working-dir repo)))
+  (run-command command args :cd cd :error error))
+
+
+;;  BZR
+
+(defclass bzr-repo (base-repo)
   ((url :initarg :url
-	:documentation "The url from which to grab the gzipped tar file.")
-   (strip-components :initarg :strip-components :initform nil
+	:documentation "The url from which to grab the gzipped tar file.")))
+
+(define-vcs-command bzr-repo "bzr" "Bzr")
+
+(defclass tarball-backed-bzr-repo (bzr-repo)
+  ((strip-components :initarg :strip-components :initform nil
 		     :documentation "Used to strip leading directories
 		     off the files. This is necessary when the tarball
 		     includes a top-level directory that contains a
@@ -138,8 +165,7 @@ Use FORCE to fetch/update even if the package is installed.
 		     top level name is so that the local bzr
 		     repository can match up the old and new versions
 		     of the files"))
-  (:documentation "Upstream is a set of tarballs. Local patches are maintained in a bzr repository.")
-)
+  (:documentation "Upstream is a set of tarballs. Local patches are maintained in a bzr repository."))
 
 (defmethod working-dir ((p tarball-backed-bzr-repo))
   (merge-pathnames (make-pathname :directory '(:relative "local"))
@@ -154,12 +180,11 @@ Use FORCE to fetch/update even if the package is installed.
 		    :test #'(lambda (x)
 			      (not (member ".bzr" (pathname-directory x) :test #'equalp)))))
 
-(defmethod repo-status ((p tarball-backed-bzr-repo))
-  (let ((result (safe-shell-command t "(cd ~a && bzr status)" (working-dir p))))
-    (cond ((equalp result "")
-	   nil)
-	  (t
-	   result))))
+(defmethod repo-status ((repo tarball-backed-bzr-repo))
+  (let ((result (repo-command repo t "status" :cd t)))
+    (when (and result
+               (< 0 (length result)))
+      result)))
 
 (defmethod local-repo-changes ((p tarball-backed-bzr-repo))
   (multiple-value-bind (result code)
@@ -187,14 +212,14 @@ Use FORCE to fetch/update even if the package is installed.
 			  (update-repo (find-repo s))))))))
 
 (defun download (url path)
-  #-openbsd (test-environment :wget)
+  #-openbsd (test-environment :wget "Wget")
   (dump-message :message (format nil "Downloading ~A into ~A" url path))
   #+openbsd (safe-shell-command t "ftp -o ~A ~A" path url)
   #-openbsd (safe-shell-command t "wget ~a -O ~a" url path))
 
 (defmethod update-repo ((p tarball-backed-bzr-repo))
   "update the local database from the cache."
-  (test-environment :bzr)
+  (test-environment p)
   (let* ((dir (database-dir p))
 	 (upstream (merge-pathnames "upstream" dir)))
     (with-slots (url strip-components) p
@@ -246,9 +271,13 @@ Use FORCE to fetch/update even if the package is installed.
   (with-slots (name url) p
     (setf url (concatenate 'string "http://www.cliki.net/" (string-downcase name) "?download"))))
 
+
+;;  DARCS
+
 (defclass darcs-repo (base-repo)
-  ((url :initarg :url))
-  )
+  ((url :initarg :url)))
+
+(define-vcs-command darcs-repo "darcs" "Darcs")
 
 (defmethod asd-file ((p darcs-repo) &key (package-name nil))
   (call-next-method p :package-name package-name
@@ -271,8 +300,7 @@ Use FORCE to fetch/update even if the package is installed.
 
 (defmethod update-repo ((p darcs-repo))
   "update the local database from the cache."
-
-  (test-environment :darcs)
+  (test-environment p)
   (let* ((dir (database-dir p)))
     (with-slots (url) p
       (cond ((not (probe-file dir))
@@ -289,6 +317,8 @@ Use FORCE to fetch/update even if the package is installed.
 (defclass git-repo (base-repo)
   ((url :initarg :url)
    (branch :initarg :branch :initform "master")))
+
+(define-vcs-command git-repo "git" "Git")
 
 (defmethod asd-file ((p git-repo) &key (package-name nil))
   (call-next-method p :package-name package-name
@@ -311,7 +341,7 @@ Use FORCE to fetch/update even if the package is installed.
   (restart-bind
       ((retry (lambda () (update-repo p))
 	 :report-function (lambda (s) (format s "Retry updating ~a." p))))
-    (test-environment :git)
+    (test-environment p)
     (let* ((dir (database-dir p)))
       (with-slots (url branch release) p
 	(cond ((not (probe-file (make-pathname :name ".git" :defaults dir)))
@@ -333,6 +363,8 @@ Use FORCE to fetch/update even if the package is installed.
   ((url :initarg :url))
   )
 
+(define-vcs-command mercurial-repo "hg" "Mercurial")
+
 (defmethod asd-file ((p mercurial-repo) &key (package-name nil))
   (call-next-method p :package-name package-name
 		    :test #'(lambda (x)
@@ -351,7 +383,7 @@ Use FORCE to fetch/update even if the package is installed.
 	  (t result))))
 
 (defmethod update-repo ((p mercurial-repo))
-  (test-environment :mercurial)
+  (test-environment p)
   (let* ((dir (database-dir p)))
     (with-slots (url release) p
       (cond ((not (probe-file (make-pathname :name ".hg" :defaults dir)))
@@ -367,11 +399,13 @@ Use FORCE to fetch/update even if the package is installed.
 		      nil)
 		     (t result))))))))
 
-;; ********************************************************************************
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  SVN
 
 (defclass svn-repo (base-repo)
-  ((url :initarg :url))
-  )
+  ((url :initarg :url)))
+
+(define-vcs-command svn-repo "svn" "Subversion")
 
 (defmethod asd-file ((p svn-repo) &key (package-name nil))
   (call-next-method p :package-name package-name
@@ -389,7 +423,7 @@ Use FORCE to fetch/update even if the package is installed.
   (repo-status p))
 
 (defmethod update-repo ((p svn-repo))
-  (test-environment :svn)
+  (test-environment p)
   (let* ((dir (database-dir p)))
     (with-slots (url) p
       (cond ((not (probe-file dir))
@@ -406,8 +440,9 @@ Use FORCE to fetch/update even if the package is installed.
 
 (defclass cvs-repo (base-repo)
   ((cvsroot :initarg :cvsroot)
-   (module :initarg :module))
-  )
+   (module :initarg :module)))
+
+(define-vcs-command cvs-repo "cvs" "CVS")
 
 (defmethod repo-status ((p cvs-repo))
   (let ((result (safe-shell-command t "(cd ~a && cvs diff --brief)" (working-dir p))))
