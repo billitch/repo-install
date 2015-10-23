@@ -92,8 +92,6 @@
   "Add detected repositories to current manifest
    without changing most-recent-manifest.lisp ."
   (dolist (d (detect-all-repos))
-    (format t "~%")
-    (repo-definition d t)
     (apply 'make-instance
            (getf d :type)
            (nthcdr 2 d))))
