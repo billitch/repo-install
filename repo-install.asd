@@ -27,5 +27,6 @@
 	       (:file "vars")
 	       (:file "installer")
 	       (:file "detect")
+	       (:file "tests")
 	       (:static-file "most-recent-manifest.lisp"))
   :serial t)

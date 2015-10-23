@@ -43,7 +43,7 @@
 directory, but have not yet been committed to the local repository."
   (cond ((not only-installed)
 	 (loop for package in (all-packages)
-	      do (intall (name package)))))
+	      do (install (name package)))))
   (loop for package in (all-packages)
      when (probe-file (working-dir package))
        collect (test-package package)))
